@@ -1,5 +1,6 @@
 # R$`^2`$AG: Incorporating Retrieval Information into Retrieval Augmented Generation
 The official Github repository for paper [R$`^2`$AG]() (RRAG).
+
 ![intro](assets/intro.png)
 
 ## Abstract
