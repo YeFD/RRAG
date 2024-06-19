@@ -1,12 +1,12 @@
-# R^2AG: Incorporating Retrieval Information into Retrieval Augmented Generation
-The official Github repository for paper [R$^2$AG]() (RRAG).
+# R$`^2`$AG: Incorporating Retrieval Information into Retrieval Augmented Generation
+The official Github repository for paper [R$`^2`$AG]() (RRAG).
 ![intro](assets/intro.png)
 
 ## Abstract
-Retrieval augmented generation (RAG) has been applied in many scenarios to augment large language models (LLMs) with external documents provided by retrievers. However, a semantic gap exists between LLMs and retrievers due to differences in their training objectives and architectures. This misalignment forces LLMs to passively accept the documents provided by the retrievers, leading to incomprehension in the generation process, where the LLMs are burdened with the task of distinguishing these documents using their inherent knowledge. This paper proposes R$^2$AG, a novel enhanced RAG framework to fill this gap by incorporating **R**etrieval information into **R**etrieval **A**ugmented **G**eneration. Specifically, R$^2$AG utilizes the nuanced features from the retrievers and employs a R$^2$-Former to capture retrieval information. Then, a retrieval-aware prompting strategy is designed to integrate retrieval information into LLMs' generation. Notably, R$^2$AG suits low-source scenarios where LLMs and retrievers are frozen. Extensive experiments across five datasets validate the effectiveness, robustness, and efficiency of R$^2$AG. Our analysis reveals that retrieval information serves as an anchor to aid LLMs in the generation process, thereby filling the semantic gap.
+Retrieval augmented generation (RAG) has been applied in many scenarios to augment large language models (LLMs) with external documents provided by retrievers. However, a semantic gap exists between LLMs and retrievers due to differences in their training objectives and architectures. This misalignment forces LLMs to passively accept the documents provided by the retrievers, leading to incomprehension in the generation process, where the LLMs are burdened with the task of distinguishing these documents using their inherent knowledge. This paper proposes R$`^2`$AG, a novel enhanced RAG framework to fill this gap by incorporating **R**etrieval information into **R**etrieval **A**ugmented **G**eneration. Specifically, R$`^2`$AG utilizes the nuanced features from the retrievers and employs a R$`^2`$-Former to capture retrieval information. Then, a retrieval-aware prompting strategy is designed to integrate retrieval information into LLMs' generation. Notably, R$`^2`$AG suits low-source scenarios where LLMs and retrievers are frozen. Extensive experiments across five datasets validate the effectiveness, robustness, and efficiency of R$`^2`$AG. Our analysis reveals that retrieval information serves as an anchor to aid LLMs in the generation process, thereby filling the semantic gap.
 
 ## Quick Start
-This guide will walk you through processing datasets and training in R$^2$AG framework with datasets like [NQ](https://ai.google.com/research/NaturalQuestions/), [HotpotQA](https://hotpotqa.github.io), [MuSiQue](https://allenai.org/data/musique), [2WikiMultiHopQA](https://github.com/Alab-NII/2wikimultihop?tab=readme-ov-file), and [DuReader](https://huggingface.co/datasets/yanbingzheng/LongBench).
+This guide will walk you through processing datasets and training in R$`^2`$AG framework with datasets like [NQ](https://ai.google.com/research/NaturalQuestions/), [HotpotQA](https://hotpotqa.github.io), [MuSiQue](https://allenai.org/data/musique), [2WikiMultiHopQA](https://github.com/Alab-NII/2wikimultihop?tab=readme-ov-file), and [DuReader](https://huggingface.co/datasets/yanbingzheng/LongBench).
 
 ### Prepare the code and environment
 Git clone our repository and install following packages.
@@ -22,7 +22,7 @@ peft==0.10.0
 For NQ datasets, download from the repository of [lost-in-the-middle](https://github.com/nelson-liu/lost-in-the-middle/tree/main/qa_data). Other datasets refer their official websites.
 
 ### (Optional) Fine-tune a Retriever
-To directly improve RAG performance, you can fine-tune a retriever using [retrieval/finetune_retriever.py](retrieval/finetune_retriever.py). This step is optional but recommended for achieving optimal results of R$^2$AG. Here we fine-tune a BERT using SentenceTransformer.
+To directly improve RAG performance, you can fine-tune a retriever using [retrieval/finetune_retriever.py](retrieval/finetune_retriever.py). This step is optional but recommended for achieving optimal results of R$`^2`$AG. Here we fine-tune a BERT using SentenceTransformer.
 ```bash
 cd retrieval
 python finetune_retriever.py \
@@ -69,8 +69,8 @@ where
 - `emb_save_path`: The .pkl file path to save embeddings.
 - `dataset_save_path`: The .pkl file path to save dataset.
 
-### Train R$^2$AG
-[runner.py](runner.py) is the central script for training, generation and evaluation. You can train R$^2$-Former by:
+### Train R$`^2`$AG
+[runner.py](runner.py) is the central script for training, generation and evaluation. You can train R$`^2`$-Former by:
 ```bash
 python runner.py \
     --dataset_name nq_10 \
@@ -93,11 +93,11 @@ where
 - `output_dir`: The directory to save model. 
 - `freeze_llm`: If set, this freezes the parameters of the LLM during training.
 - `num_k`: Specifies the number of top documents. 
-- `use_rrag`: Enables the use of R$^2$AG.
+- `use_rrag`: Enables the use of R$`^2`$AG.
 - `use_evaluation`: Enables the evaluation mode.
 - `save_results`: If set, results from generation will be saved to `output` folder.
 
-Or, training R$^2$-Former and LLM.
+Or, training R$`^2`$-Former and LLM.
 
 You can customize selecting different Large Language Models (LLMs), datasets, and various other parameters. For example, you can get the standard RAG results by:
 ```bash
@@ -110,5 +110,5 @@ python runner.py \
     --use_evaluation \
     --save_results
 ```
-For HotpotQA, 2Wiki, and MuSiQue datasets, refer to the [scripts/train](scripts/train) folder for specific commands to train R$^2$AG.
+For HotpotQA, 2Wiki, and MuSiQue datasets, refer to the [scripts/train](scripts/train) folder for specific commands to train R$`^2`$AG.
 
