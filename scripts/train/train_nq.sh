@@ -1,0 +1,12 @@
+python runner.py \
+    --dataset_name nq_10 \
+    --input_path retrieval/dataset/nq-open-10_total_documents_gold_at_0_bert.pkl \
+    --model_name meta-llama/Llama-2-7b-hf \
+    --use_training\
+    --save_model \
+    --output_dir your/rrag/path/Rrag-Llama-2-7b \
+    --freeze_llm \
+    --num_k 10 \
+    --use_rrag \
+    --use_evaluation \
+    --save_results
