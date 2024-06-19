@@ -98,8 +98,6 @@ where
 - `use_evaluation`: Enables the evaluation mode.
 - `save_results`: If set, results from generation will be saved to `output` folder.
 
-Or, training R$`^2`$-Former and LLM.
-
 You can customize selecting different Large Language Models (LLMs), datasets, and various other parameters. For example, you can get the standard RAG results by:
 ```bash
 python runner.py \
