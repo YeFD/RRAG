@@ -19,56 +19,16 @@ from typing import List, Optional, Tuple, Type, TypeVar
 from copy import deepcopy
 from pydantic.dataclasses import dataclass
 import pathlib
-
-T = TypeVar("T")
-
-PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
-
-@dataclass(frozen=True)
-class Document:
-    title: str
-    text: str
-    id: Optional[str] = None
-    score: Optional[float] = None
-    rerank_score: Optional[float] = None
-    hasanswer: Optional[bool] = None
-    isgold: Optional[bool] = None
-    original_retrieval_index: Optional[int] = None
-
-    @classmethod
-    def from_dict(cls: Type[T], data: dict) -> T:
-        data = deepcopy(data)
-        if not data:
-            raise ValueError("Must provide data for creation of Document from dict.")
-        id = data.pop("id", None)
-        score = data.pop("score", None)
-        rerank_score = data.pop("rerank_score", None)
-        # Convert score to float if it's provided.
-        if score is not None:
-            score = float(score)
-        if rerank_score is not None:
-            rerank_score = float(rerank_score)
-        return cls(**dict(data, id=id, score=score, rerank_score=rerank_score))
-
-    
 import pickle
 from tqdm import tqdm
 import json, logging
 
-from copy import deepcopy
-
 logger = logging.getLogger()
-
-from typing import List, Optional, Tuple, Type, TypeVar
-from copy import deepcopy
-from pydantic.dataclasses import dataclass
-import pathlib
-from tqdm import tqdm
-
+PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
 T = TypeVar("T")
 
 def get_qa_instruction(
-    question: str, paragraphs: List, retrieval_aware: bool, RETRIEVAL_TOKEN):
+    question: str, paragraphs: List, retrieval_aware: bool, RETRIEVAL_TOKEN, use_cot=False):
     if not question:
         raise ValueError(f"Provided `question` must be truthy, got: {question}")
     if not paragraphs:

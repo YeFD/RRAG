@@ -19,9 +19,12 @@ from typing import List, Optional, Tuple, Type, TypeVar
 from copy import deepcopy
 from pydantic.dataclasses import dataclass
 import pathlib
+import pickle
+from tqdm import tqdm
+import json, logging
 
+logger = logging.getLogger()
 T = TypeVar("T")
-
 PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
 
 @dataclass(frozen=True)
@@ -50,25 +53,8 @@ class Document:
             rerank_score = float(rerank_score)
         return cls(**dict(data, id=id, score=score, rerank_score=rerank_score))
 
-    
-import pickle
-from tqdm import tqdm
-import json, logging
-
-from copy import deepcopy
-
-logger = logging.getLogger()
-
-from typing import List, Optional, Tuple, Type, TypeVar
-from copy import deepcopy
-from pydantic.dataclasses import dataclass
-import pathlib
-from tqdm import tqdm
-
-T = TypeVar("T")
-
 def get_qa_instruction(
-    question: str, context: List, retrieval_aware: bool, RETRIEVAL_TOKEN):
+    question: str, context: List, retrieval_aware: bool, RETRIEVAL_TOKEN, use_cot=False):
     if not question:
         raise ValueError(f"Provided `question` must be truthy, got: {question}")
     if not context:

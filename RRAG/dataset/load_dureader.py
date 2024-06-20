@@ -19,29 +19,20 @@ from typing import List, Optional, Tuple, Type, TypeVar
 from copy import deepcopy
 from pydantic.dataclasses import dataclass
 import pathlib
+import pickle
+from tqdm import tqdm
+import json, logging
 
 T = TypeVar("T")
 
 PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
 
-import pickle
-from tqdm import tqdm
-import json, logging
-
-from copy import deepcopy
 
 logger = logging.getLogger()
-
-from typing import List, Optional, Tuple, Type, TypeVar
-from copy import deepcopy
-from pydantic.dataclasses import dataclass
-import pathlib
-from tqdm import tqdm
-
 T = TypeVar("T")
 
 def get_qa_instruction(
-    question: str, documents: List, retrieval_aware: bool, RETRIEVAL_TOKEN):
+    question: str, documents: List, retrieval_aware: bool, RETRIEVAL_TOKEN, use_cot=False):
     if not question:
         raise ValueError(f"Provided `question` must be truthy, got: {question}")
     if not documents:
