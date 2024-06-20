@@ -32,7 +32,7 @@ logger = logging.getLogger()
 T = TypeVar("T")
 
 def get_qa_instruction(
-    question: str, documents: List, retrieval_aware: bool, RETRIEVAL_TOKEN, use_cot=False):
+    question: str, documents: List, retrieval_aware: bool, RETRIEVAL_TOKEN):
     if not question:
         raise ValueError(f"Provided `question` must be truthy, got: {question}")
     if not documents:
