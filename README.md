@@ -1,5 +1,5 @@
 # R$`^2`$AG: Incorporating Retrieval Information into Retrieval Augmented Generation
-The official Github repository for paper [R$`^2`$AG]() (RRAG).
+The official Github repository for paper [R$`^2`$AG]() (EMNLP 2024 Findings).
 
 ![intro](assets/intro.png)
 

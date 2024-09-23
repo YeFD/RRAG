@@ -14,22 +14,16 @@ def seed_it(seed):
     torch.manual_seed(seed)
 
 
-from transformers import AutoTokenizer
 from typing import List, Optional, Tuple, Type, TypeVar
 from copy import deepcopy
-from pydantic.dataclasses import dataclass
 import pathlib
 import pickle
 from tqdm import tqdm
 import json, logging
 
 T = TypeVar("T")
-
-PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
-
-
 logger = logging.getLogger()
-T = TypeVar("T")
+PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
 
 def get_qa_instruction(
     question: str, documents: List, retrieval_aware: bool, RETRIEVAL_TOKEN):
@@ -38,7 +32,7 @@ def get_qa_instruction(
     if not documents:
         raise ValueError(f"Provided `documents` must be truthy, got: {documents}")
 
-    if similarity_aware:
+    if retrieval_aware:
         prompt_filename = 'qa_similarity_zh.prompt'
     else:
         prompt_filename = "qa_zh.prompt"
@@ -101,15 +95,15 @@ def load_dureader_data(input_path, dataset_seed=42):
         f.close()
     # dataset splitting
     seed_it(dataset_seed)
-    all_index = list(range(len(examples)))
+    all_index = list(range(len(dureader_dataset)))
     train_index = np.sort(random.sample(all_index, int(len(all_index)*0.8)))
     test_index = np.sort(list(set(all_index).difference(set(train_index))))
     print(f'prepare dataset, train size: {len(train_index)}, test size: {len(test_index)}')
-    return examples, train_index, test_index
+    return dureader_dataset, train_index, test_index
 
 
 def load_dureader_dataset(input_path, max_prompt_length, tokenizer, retrieval_aware=True, RETRIEVAL_TOKEN='<R>', dataset_seed=42):
-    examples, train_index, test_index = load_nq_data(input_path, dataset_seed)
+    examples, train_index, test_index = load_dureader_data(input_path, dataset_seed)
     instruction_dataset_train = get_instruction_dataset(examples, train_index, max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN)
     instruction_dataset_test = get_instruction_dataset(examples, test_index, max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN)
 

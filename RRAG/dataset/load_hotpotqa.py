@@ -14,47 +14,19 @@ def seed_it(seed):
     torch.manual_seed(seed)
 
 
-from transformers import AutoTokenizer
 from typing import List, Optional, Tuple, Type, TypeVar
 from copy import deepcopy
-from pydantic.dataclasses import dataclass
 import pathlib
 import pickle
 from tqdm import tqdm
 import json, logging
 
-logger = logging.getLogger()
 T = TypeVar("T")
+logger = logging.getLogger()
 PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
 
-@dataclass(frozen=True)
-class Document:
-    title: str
-    text: str
-    id: Optional[str] = None
-    score: Optional[float] = None
-    rerank_score: Optional[float] = None
-    hasanswer: Optional[bool] = None
-    isgold: Optional[bool] = None
-    original_retrieval_index: Optional[int] = None
-
-    @classmethod
-    def from_dict(cls: Type[T], data: dict) -> T:
-        data = deepcopy(data)
-        if not data:
-            raise ValueError("Must provide data for creation of Document from dict.")
-        id = data.pop("id", None)
-        score = data.pop("score", None)
-        rerank_score = data.pop("rerank_score", None)
-        # Convert score to float if it's provided.
-        if score is not None:
-            score = float(score)
-        if rerank_score is not None:
-            rerank_score = float(rerank_score)
-        return cls(**dict(data, id=id, score=score, rerank_score=rerank_score))
-
 def get_qa_instruction(
-    question: str, context: List, retrieval_aware: bool, RETRIEVAL_TOKEN, use_cot=False):
+    question: str, context: List, retrieval_aware: bool, RETRIEVAL_TOKEN, use_cot):
     if not question:
         raise ValueError(f"Provided `question` must be truthy, got: {question}")
     if not context:
@@ -81,7 +53,7 @@ def get_qa_instruction(
     return prompt_template.format(question=question, search_results="\n".join(formatted_documents))
 
 
-def get_instruction_dataset(dataset, max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN, sample_answer=True):
+def get_instruction_dataset(dataset, max_prompt_length, tokenizer, retrieval_aware, use_cot, RETRIEVAL_TOKEN, sample_answer=True):
     instruction_dataset = []
     for input_example in tqdm(dataset):
         input_example = deepcopy(input_example)
@@ -94,6 +66,7 @@ def get_instruction_dataset(dataset, max_prompt_length, tokenizer, retrieval_awa
                 context,
                 retrieval_aware=retrieval_aware,
                 RETRIEVAL_TOKEN=RETRIEVAL_TOKEN,
+                use_cot=use_cot,
             )
         
         input_example['instruction'] = prompt
@@ -159,10 +132,10 @@ def load_hotpotqa_data(input_path):
     return train_data, test_data
 
 
-def load_hotpotqa_dataset(input_path, max_prompt_length, tokenizer, retrieval_aware=True, RETRIEVAL_TOKEN='<R>'):
+def load_hotpotqa_dataset(input_path, max_prompt_length, tokenizer, retrieval_aware, use_cot=False, RETRIEVAL_TOKEN='<R>'):
     train_data, test_data = load_hotpotqa_data(input_path)
-    instruction_dataset_train = get_instruction_dataset(train_data[:], max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN)
-    instruction_dataset_test = get_instruction_dataset(test_data[:], max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN)
+    instruction_dataset_train = get_instruction_dataset(train_data[:], max_prompt_length, tokenizer, retrieval_aware, use_cot, RETRIEVAL_TOKEN)
+    instruction_dataset_test = get_instruction_dataset(test_data[:], max_prompt_length, tokenizer, retrieval_aware, use_cot, RETRIEVAL_TOKEN)
 
     instruction_dataset_train = get_embeds(instruction_dataset_train)
     instruction_dataset_test = get_embeds(instruction_dataset_test)

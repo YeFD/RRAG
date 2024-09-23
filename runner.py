@@ -38,6 +38,7 @@ class RRAGRunner:
     RETRIEVAL_TOKEN = '<R>'
     UNK_TOKEN = '<unk>'
     UNK_TOKEN_ID = 0
+    instruction_type = 'instruction'
 
     def __init__(
         self,
@@ -71,6 +72,7 @@ class RRAGRunner:
         use_beam=False,
         beam_num=5,
         save_results=False,
+        instruction_type='instruction',
     ):
         self.dataset_name = dataset_name # 
         self.input_path = input_path
@@ -88,6 +90,7 @@ class RRAGRunner:
         RRAGRunner.set_retrieval_token(RETRIEVAL_TOKEN)
         RRAGRunner.set_unk_token(UNK_TOKEN)
         RRAGRunner.set_unk_token_id(UNK_TOKEN_ID)
+        RRAGRunner.set_instruction_type(instruction_type)
 
         self.num_k = num_k
         self.use_training = use_training
@@ -116,29 +119,44 @@ class RRAGRunner:
     def set_unk_token_id(cls, id):
         cls.UNK_TOKEN_ID = id
 
+    @classmethod
+    def set_instruction_type(cls, instruction_type):
+        cls.instruction_type = instruction_type
+
     @staticmethod
     def format_instruction(example):
         output_texts = []
         for i in range(len(example['instruction'])):
-            text = "### Instruction: \n{instruction}\n\n### Response:\n{output}".format(
-                instruction=example['instruction'][i],
-                output=example['output'][i]
-            )
+            if RRAGRunner.instruction_type == 'instruction':
+                text = "### Instruction: \n{instruction}\n\n### Response:\n{output}".format(
+                    instruction=example['instruction'][i],
+                    output=example['output'][i]
+                )
+            elif RRAGRunner.instruction_type == 'chat':
+                text = "[INST] {instruction} [/INST]{output}".format(
+                    instruction=example['instruction'][i],
+                    output=example['output'][i]
+                )
             text = text.replace(RRAGRunner.RETRIEVAL_TOKEN, RRAGRunner.UNK_TOKEN)
             output_texts.append(text)
         return output_texts
     
     @staticmethod
     def format_instruction_for_response(prompt):
-        text = "### Instruction: \n{instruction}\n\n### Response:\n".format(
-            instruction=prompt,
-            )
+        if RRAGRunner.instruction_type == 'instruction':
+            text = "### Instruction: \n{instruction}\n\n### Response:\n".format(
+                instruction=prompt,
+                )
+        elif RRAGRunner.instruction_type == 'chat':
+            text = "[INST] {instruction} [/INST]".format(
+                instruction=prompt,
+                )
         text = text.replace(RRAGRunner.RETRIEVAL_TOKEN, RRAGRunner.UNK_TOKEN)
         return text
     
     def load_tokenizer(self):
         if self.dataset_name == 'dureader': # Qwen
-            tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=True, trust_remote_code=True)
+            tokenizer = AutoTokenizer.from_pretrained(self.model_name, use_auth_token=True, trust_remote_code=True)
             tokenizer.padding_side = "left"
             tokenizer.unk_token = '<|im_end|>'
             tokenizer.pad_token = tokenizer.eos_token
@@ -364,6 +382,7 @@ if __name__ == "__main__":
     parser.add_argument('--use_beam', action='store_true', help='Use beam search')
     parser.add_argument('--beam_num', type=int, default=5, help='Number of beams in beam search')
     parser.add_argument('--save_results', action='store_true', help='Save results')
+    parser.add_argument('--instruction_type', default='instruction', choices=['chat', 'instruction'], help='instruction_type, llama or mistral')
 
     args = parser.parse_args()
     main(**vars(args))

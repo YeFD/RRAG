@@ -123,15 +123,14 @@ def rouge_zh_score(prediction, ground_truths):
         score.append(rouge_score(prediction, ground_truth))
     return max(score)
 
-
-def get_metrics_for_example_zh(example):
+def get_metrics_for_example_zh(example, METRICS):
     gold_answers = example["answers"]
     model_answer = example["model_answer"]
 
     # NOTE: we take everything up to the first newline, since otherwise models could hack
     # the metric by simply copying te input context (as the gold answer is guaranteed
     # to occur in the input context).
-    # model_answer = model_answer.split("\n")[0].strip()
+    model_answer = model_answer.split("\n")[0].strip()
 
     example_metrics = {}
     for (metric, metric_name) in METRICS:

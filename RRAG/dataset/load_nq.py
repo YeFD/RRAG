@@ -14,7 +14,6 @@ def seed_it(seed):
     torch.manual_seed(seed)
 
 
-from transformers import AutoTokenizer
 from typing import List, Optional, Tuple, Type, TypeVar
 from copy import deepcopy
 from pydantic.dataclasses import dataclass
@@ -24,8 +23,8 @@ from tqdm import tqdm
 import json, logging
 from copy import deepcopy
 
-logger = logging.getLogger()
 T = TypeVar("T")
+logger = logging.getLogger()
 PROMPTS_ROOT = pathlib.Path('RRAG/prompts').resolve()
 
 @dataclass(frozen=True)
@@ -56,7 +55,7 @@ class Document:
 
 
 def get_qa_instruction(
-    question: str, documents: List, retrieval_aware: bool, RETRIEVAL_TOKEN, use_cot=False):
+    question: str, documents: List, retrieval_aware: bool, use_cot, RETRIEVAL_TOKEN):
     if not question:
         raise ValueError(f"Provided `question` must be truthy, got: {question}")
     if not documents:
@@ -82,7 +81,7 @@ def get_qa_instruction(
     return prompt_template.format(question=question, search_results="\n".join(formatted_documents))
 
 
-def get_instruction_dataset(dataset, idx, max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN, sample_answer=True):
+def get_instruction_dataset(dataset, idx, max_prompt_length, tokenizer, retrieval_aware, use_cot, RETRIEVAL_TOKEN, sample_answer=True):
     instruction_dataset = []
     for i in tqdm(idx):
         input_example = deepcopy(dataset[i])
@@ -97,6 +96,7 @@ def get_instruction_dataset(dataset, idx, max_prompt_length, tokenizer, retrieva
                 documents,
                 retrieval_aware=retrieval_aware,
                 RETRIEVAL_TOKEN=RETRIEVAL_TOKEN,
+                use_cot=use_cot,
             )
         
         input_example['instruction'] = prompt
@@ -134,10 +134,10 @@ def load_nq_data(input_path, dataset_seed=42):
     return examples, train_index, test_index
 
 
-def load_nq_dataset(input_path, max_prompt_length, tokenizer, retrieval_aware=True, RETRIEVAL_TOKEN='<R>', dataset_seed=42):
+def load_nq_dataset(input_path, max_prompt_length, tokenizer, retrieval_aware, use_cot, RETRIEVAL_TOKEN='<R>', dataset_seed=42):
     examples, train_index, test_index = load_nq_data(input_path, dataset_seed)
-    instruction_dataset_train = get_instruction_dataset(examples, train_index, max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN)
-    instruction_dataset_test = get_instruction_dataset(examples, test_index, max_prompt_length, tokenizer, retrieval_aware, RETRIEVAL_TOKEN)
+    instruction_dataset_train = get_instruction_dataset(examples, train_index, max_prompt_length, tokenizer, retrieval_aware, use_cot, RETRIEVAL_TOKEN)
+    instruction_dataset_test = get_instruction_dataset(examples, test_index, max_prompt_length, tokenizer, retrieval_aware, use_cot, RETRIEVAL_TOKEN)
 
     instruction_dataset_train = get_embeds(instruction_dataset_train)
     instruction_dataset_test = get_embeds(instruction_dataset_test)
