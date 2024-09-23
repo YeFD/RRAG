@@ -20,7 +20,7 @@ peft==0.10.0
 ```
 
 ### Dataset Preparation
-For NQ datasets, download from the repository of [lost-in-the-middle](https://github.com/nelson-liu/lost-in-the-middle/tree/main/qa_data). Other datasets refer their official websites.
+For NQ datasets, download from the repository of [lost-in-the-middle](https://github.com/nelson-liu/lost-in-the-middle/tree/main/qa_data). As the [LongBench version of DuReader](https://huggingface.co/datasets/yanbingzheng/LongBench) does not include labels for relevant documents, you can download the [raw version of DuReader](https://aistudio.baidu.com/datasetdetail/88466) and follow the instructions in [label_dureader.ipynb](retrieval/label_dureader.ipynb) to generate the labels. Alternatively, download the preprocessed .pkl file directly from [here](https://drive.google.com/file/d/1rVeFZi9SVHJ59VU8MZUIeui9gwZP2WBp/view?usp=share_link). Other datasets refer their official websites.
 
 ### (Optional) Fine-tune a Retriever
 To directly improve RAG performance, you can fine-tune a retriever using [retrieval/finetune_retriever.py](retrieval/finetune_retriever.py). This step is optional but recommended for achieving optimal results of R$`^2`$AG. Here we fine-tune a BERT using SentenceTransformer.
