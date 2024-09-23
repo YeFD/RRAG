@@ -60,7 +60,7 @@ class RFormer(nn.Module):
         position_ids = torch.arange(self.num_k, device=x.device).expand(x.shape[0], self.num_k)
         pe = self.position_embeddings(position_ids)
         x = x + pe
-        x = self.attention_layer(x)
+        x = self.attention_layer(x.permute(1, 0, 2)).permute(1, 0, 2)
         y = self.classifier_layer(x)
         if label is not None:
             label = label.to(y.dtype)
