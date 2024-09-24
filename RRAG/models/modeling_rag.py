@@ -1,8 +1,7 @@
 import random, os
 import torch
 import torch.nn as nn
-from transformers import  LlamaForCausalLM, LlamaModel, PreTrainedModel, LlamaConfig, AutoModelForCausalLM, PretrainedConfig
-from typing import Any, Dict, List, Optional, Tuple
+from transformers import PreTrainedModel, AutoModelForCausalLM, PretrainedConfig
 
 class RAGLlamaConfig(PretrainedConfig):
     model_type = "ragllama"
