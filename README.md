@@ -1,5 +1,5 @@
 # R$`^2`$AG: Incorporating Retrieval Information into Retrieval Augmented Generation
-The official Github repository for paper [R$`^2`$AG]() (EMNLP 2024 Findings).
+The official Github repository for paper [R$`^2`$AG](https://doi.org/10.18653/v1/2024.findings-emnlp.678) (EMNLP 2024 Findings).
 
 ![intro](assets/intro.png)
 
@@ -111,3 +111,13 @@ python runner.py \
 ```
 For HotpotQA, 2Wiki, and MuSiQue datasets, refer to the [scripts/train](scripts/train) folder for specific commands to train R$`^2`$AG.
 
+## Citation
+```
+@inproceedings{Ye2024R2AGIR,
+  title={{R}$^2${AG}: Incorporating Retrieval Information into Retrieval Augmented Generation},
+  author={Fuda Ye and Shuangyin Li and Yongqi Zhang and Lei Chen},
+  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2024},
+  year={2024},
+  doi={10.18653/v1/2024.findings-emnlp.678}
+}
+```
