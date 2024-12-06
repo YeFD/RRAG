@@ -113,7 +113,7 @@ For HotpotQA, 2Wiki, and MuSiQue datasets, refer to the [scripts/train](scripts/
 
 ## Citation
 ```
-@inproceedings{Ye2024R2AGIR,
+@inproceedings{Ye2024R2AG,
   title={{R}$^2${AG}: Incorporating Retrieval Information into Retrieval Augmented Generation},
   author={Fuda Ye and Shuangyin Li and Yongqi Zhang and Lei Chen},
   booktitle={Findings of the Association for Computational Linguistics: EMNLP 2024},
